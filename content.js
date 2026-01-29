@@ -189,6 +189,27 @@
     return transformed !== gradientStr ? transformed : null;
   }
 
+  function isGradientDark(gradientStr) {
+    if (!gradientStr || !gradientStr.includes('gradient')) {
+      return false;
+    }
+    const colorRegex = /rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*([\d.]+))?\)/g;
+    let match;
+    let totalBrightness = 0;
+    let colorCount = 0;
+
+    while ((match = colorRegex.exec(gradientStr)) !== null) {
+      const r = parseInt(match[1]);
+      const g = parseInt(match[2]);
+      const b = parseInt(match[3]);
+      totalBrightness += getBrightness(r, g, b);
+      colorCount++;
+    }
+
+    // Consider gradient dark if average brightness is below threshold
+    return colorCount > 0 && (totalBrightness / colorCount) <= BG_BRIGHTNESS_THRESHOLD;
+  }
+
   function detectDarkTheme() {
     const bodyBg = parseColor(window.getComputedStyle(document.body).backgroundColor);
     const htmlBg = parseColor(window.getComputedStyle(document.documentElement).backgroundColor);
@@ -236,8 +257,9 @@
       element.style.setProperty('border-color', '#888', 'important');
     }
 
-    // Handle text color
-    const elementHasDarkBg = bgColor && getBrightness(bgColor.r, bgColor.g, bgColor.b) <= BG_BRIGHTNESS_THRESHOLD;
+    // Handle text color - check if element has dark gradient background
+    const hasDarkGradient = isGradientDark(computed.backgroundImage);
+    const elementHasDarkBg = hasDarkGradient || (bgColor && getBrightness(bgColor.r, bgColor.g, bgColor.b) <= BG_BRIGHTNESS_THRESHOLD);
     const onDarkBackground = siteHasDarkTheme || elementHasDarkBg;
 
     const textColor = parseColor(computed.color);
@@ -277,7 +299,8 @@
     // Handle SVG fills (only on light sites)
     if (!siteHasDarkTheme && (element.tagName === 'PATH' || element.tagName === 'RECT' ||
         element.tagName === 'CIRCLE' || element.tagName === 'POLYGON' ||
-        element.tagName === 'LINE' || element.tagName === 'POLYLINE')) {
+        element.tagName === 'LINE' || element.tagName === 'POLYLINE' ||
+        element.tagName === 'G' || element.tagName === 'TEXT' || element.tagName === 'TSPAN')) {
 
       const computedFill = computed.fill;
       if (computedFill && computedFill !== 'none') {
@@ -318,7 +341,8 @@
         backgroundImage: element.style.backgroundImage,
         color: element.style.color,
         borderColor: element.style.borderColor,
-        fill: element.style.fill
+        fill: element.style.fill,
+        stroke: element.style.stroke
       });
     }
   }
@@ -331,6 +355,7 @@
       element.style.color = original.color;
       element.style.borderColor = original.borderColor;
       element.style.fill = original.fill;
+      element.style.stroke = original.stroke;
       originalStyles.delete(element);
     }
   }
