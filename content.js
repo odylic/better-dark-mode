@@ -14,9 +14,9 @@
     'INPUT', 'TEXTAREA', 'SELECT', 'BUTTON'
   ]);
 
-  // Elements that should always have very bright text (titles, headings, labels)
+  // Elements that should always have very bright text (titles, headings, labels, links)
   const BRIGHT_TEXT_TAGS = new Set([
-    'H1', 'H2', 'H3', 'H4', 'H5', 'H6', 'LABEL', 'LEGEND', 'TH', 'STRONG', 'B'
+    'H1', 'H2', 'H3', 'H4', 'H5', 'H6', 'LABEL', 'LEGEND', 'TH', 'STRONG', 'B', 'A'
   ]);
 
   // Dark mode range (output brightness range for backgrounds)
@@ -286,11 +286,9 @@
           const brightness = getBrightness(fillColor.r, fillColor.g, fillColor.b);
           const hsl = rgbToHsl(fillColor.r, fillColor.g, fillColor.b);
 
-          if (brightness >= KEEP_BLACK_THRESHOLD && brightness < 150 && hsl.s <= COLORFUL_SATURATION_THRESHOLD) {
-            const transformed = transformTextColor(fillColor, true);
-            if (transformed) {
-              element.style.setProperty('fill', transformed, 'important');
-            }
+          // Transform dark fills (including black) to light for visibility
+          if (brightness < 150 && hsl.s <= COLORFUL_SATURATION_THRESHOLD) {
+            element.style.setProperty('fill', '#e0e0e0', 'important');
           }
         }
       }
@@ -302,11 +300,9 @@
           const brightness = getBrightness(strokeColor.r, strokeColor.g, strokeColor.b);
           const hsl = rgbToHsl(strokeColor.r, strokeColor.g, strokeColor.b);
 
-          if (brightness >= KEEP_BLACK_THRESHOLD && brightness < 150 && hsl.s <= COLORFUL_SATURATION_THRESHOLD) {
-            const transformed = transformTextColor(strokeColor, true);
-            if (transformed) {
-              element.style.setProperty('stroke', transformed, 'important');
-            }
+          // Transform dark strokes (including black) to light for visibility
+          if (brightness < 150 && hsl.s <= COLORFUL_SATURATION_THRESHOLD) {
+            element.style.setProperty('stroke', '#e0e0e0', 'important');
           }
         }
       }
