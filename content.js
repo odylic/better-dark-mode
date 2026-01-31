@@ -206,45 +206,32 @@
       border-color: #555 !important;
     }
 
-    /* PlacesAutocomplete dropdown container and ALL children */
+    /* PlacesAutocomplete dropdown - specific targeting only */
     #PlacesAutocomplete__autocomplete-container,
     #PlacesAutocomplete__autocomplete-container *,
-    [id*="PlacesAutocomplete__autocomplete"] *,
-    [id*="autocomplete-container"] *,
     #PlacesAutocomplete__root ~ div,
-    #PlacesAutocomplete__root ~ div *,
-    [class*="PlacesAutocomplete"] div[class^="css-"],
-    [class*="autocomplete-dropdown"],
-    [class*="autocomplete-dropdown"] *,
-    [class*="autocomplete-items"],
-    [class*="autocomplete-items"] *,
-    [class*="suggestion-list"],
-    [class*="suggestion-list"] *,
-    [class*="suggestions-container"],
-    [class*="suggestions-container"] *,
-    .pac-container,
-    .pac-container *,
-    [role="listbox"]:not(select),
-    [role="listbox"]:not(select) * {
+    #PlacesAutocomplete__root ~ div * {
       background-color: #1c1c1c !important;
       background: #1c1c1c !important;
       color: #e8e8e8 !important;
     }
 
-    /* Hover states for dropdown items */
+    /* Hover states for PlacesAutocomplete dropdown items */
     #PlacesAutocomplete__autocomplete-container > div:hover,
-    #PlacesAutocomplete__autocomplete-container > div:hover *,
-    [id*="PlacesAutocomplete__autocomplete"] > div:hover,
-    [id*="PlacesAutocomplete__autocomplete"] > div:hover * {
+    #PlacesAutocomplete__autocomplete-container > div:hover * {
       background-color: #333333 !important;
       background: #333333 !important;
       color: #ffffff !important;
     }
 
-    /* Google Places Autocomplete specific */
+    /* Google Places Autocomplete (pac-container) */
     .pac-container {
       background-color: #1c1c1c !important;
       border-color: #444 !important;
+    }
+    .pac-container * {
+      background-color: #1c1c1c !important;
+      color: #e8e8e8 !important;
     }
     .pac-item,
     .pac-item:hover,
@@ -259,14 +246,6 @@
     }
     .pac-item-query,
     .pac-matched {
-      color: #ffffff !important;
-    }
-
-    /* Generic dropdown item hover - only for elements that look like options */
-    [role="option"]:hover,
-    [role="option"][aria-selected="true"] {
-      background-color: #333333 !important;
-      background: #333333 !important;
       color: #ffffff !important;
     }
 
