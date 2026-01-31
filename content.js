@@ -3,11 +3,216 @@
   if (window.betterDarkModeLoaded) return;
   window.betterDarkModeLoaded = true;
 
+  // Reddit-specific CSS to catch gaps, tabs, and spacing issues
+  const REDDIT_CSS = `
+    /* Reddit comment thread lines - the vertical nesting indicators */
+    [class*="threadline"],
+    [class*="ThreadLine"],
+    [class*="CommentTree"] > div,
+    [class*="commentThread"],
+    .RoundedLine,
+    ._3sf33-9rVAO_v4y0pIW_CH,
+    ._1ump7uMrSA43cqok14tPrG,
+    ._3EKGkm0z_hIt85yzko1h9P,
+    ._1YCqQVO-9r-Up6QPB9H6_4,
+    [style*="border-left"][style*="white"],
+    [style*="border-left"][style*="#fff"],
+    [style*="border-left"][style*="rgb(255"],
+    .Comment [class*="line"],
+    .comment [class*="line"] {
+      border-color: #333 !important;
+      background-color: #333 !important;
+      background: #333 !important;
+    }
+
+    /* Target all elements that might be thread lines by structure */
+    shreddit-comment-tree .bg-neutral-background,
+    shreddit-comment .bg-neutral-background,
+    [class*="neutral-background"],
+    [class*="background-neutral"],
+    .bg-neutral-background {
+      background-color: #0a0a0a !important;
+      background: #0a0a0a !important;
+    }
+
+    /* Force dark borders and override Reddit CSS variables */
+    *, *::before, *::after {
+      --color-neutral-background: #0a0a0a !important;
+      --color-neutral-background-hover: #1a1a1a !important;
+      --background-neutral: #0a0a0a !important;
+      --color-secondary: #ffffff !important;
+      --color-secondary-weak: #cccccc !important;
+      --color-secondary-hover: #ffffff !important;
+      --color-tone-1: #ffffff !important;
+      --color-tone-2: #e0e0e0 !important;
+      --color-tone-3: #cccccc !important;
+      --color-body: #ffffff !important;
+      --color-body-text: #ffffff !important;
+      --text-primary: #ffffff !important;
+      --text-secondary: #cccccc !important;
+    }
+
+    /* Reddit utility classes for text colors */
+    .text-secondary,
+    .text-secondary-weak,
+    .text-secondary-hover,
+    .text-body-2,
+    .text-body-1,
+    .text-caption-1,
+    .text-caption-2,
+    [class*="text-secondary"],
+    [class*="text-tone"],
+    [class*="text-body"],
+    [class*="text-caption"] {
+      color: #ffffff !important;
+    }
+
+    /* Slightly dimmer for weak/caption text */
+    .text-secondary-weak,
+    .text-caption-1,
+    .text-caption-2,
+    [class*="-weak"] {
+      color: #cccccc !important;
+    }
+
+    /* Reddit tab bars and navigation */
+    .tabmenu, .tabmenu li, .tabmenu a,
+    .ListingLayout-outerContainer,
+    .header-bottom-left,
+    .sr-bar, .sr-list,
+    [class*="TabContainer"], [class*="tabContainer"],
+    [class*="NavBar"], [class*="navbar"],
+    [class*="TopNav"], [class*="topnav"],
+    [class*="SubNav"], [class*="subnav"],
+    [class*="header-"], [class*="Header-"],
+    .nav-buttons, .nav-left, .nav-right {
+      background-color: #0a0a0a !important;
+      background: #0a0a0a !important;
+    }
+
+    /* Reddit spacing and gaps */
+    .content, .side, .footer-parent, .debuginfo,
+    [class*="communities-section"],
+    [class*="CommunityListItem"],
+    .separator, .clearleft {
+      background-color: #0a0a0a !important;
+    }
+
+    /* Reddit - Force ALL text to be light/white */
+    body, body *, p, span, div, a, h1, h2, h3, h4, h5, h6,
+    [class*="title"], [class*="Title"],
+    [class*="text"], [class*="Text"],
+    [class*="content"], [class*="Content"],
+    [class*="comment"], [class*="Comment"],
+    [class*="post"], [class*="Post"],
+    shreddit-comment, shreddit-post,
+    faceplate-tracker {
+      color: #e8e8e8 !important;
+    }
+
+    /* Reddit sidebar navigation - make text white */
+    [class*="sidebar"], [class*="Sidebar"],
+    [class*="LeftNav"], [class*="leftNav"], [class*="left-nav"],
+    [class*="navigation"], [class*="Navigation"],
+    nav, aside,
+    [class*="menu"], [class*="Menu"],
+    [class*="drawer"], [class*="Drawer"],
+    faceplate-tracker span,
+    reddit-sidebar-nav,
+    left-nav-top-section,
+    nav-frame,
+    [slot="nav"],
+    li[role="presentation"],
+    [class*="community"], [class*="Community"],
+    [class*="game"], [class*="Game"] {
+      color: #ffffff !important;
+    }
+
+    /* Reddit sidebar items - specific elements */
+    [class*="sidebar"] *, [class*="Sidebar"] *,
+    [class*="LeftNav"] *, [class*="leftNav"] *,
+    aside *, nav *,
+    reddit-sidebar-nav *,
+    faceplate-tracker *,
+    [data-testid="left-sidebar"] *,
+    [id*="left-sidebar"] * {
+      color: #ffffff !important;
+    }
+
+    /* Reddit links */
+    a, a:visited, a:hover {
+      color: #8ab4f8 !important;
+    }
+
+    /* But sidebar links should be white */
+    aside a, nav a, [class*="sidebar"] a, [class*="Sidebar"] a,
+    [class*="LeftNav"] a, faceplate-tracker a {
+      color: #ffffff !important;
+    }
+
+    /* Reddit sidebar navigation specific - force white text on all children */
+    a[href="/?feed=home"],
+    a[href="/r/popular"],
+    a[href="/r/all"],
+    a[href*="/explore"],
+    a[href*="/news"],
+    [class*="left-sidebar"] *,
+    [id*="left-sidebar"] *,
+    pdp-left-sidebar *,
+    reddit-sidebar-nav *,
+    left-nav-top-section *,
+    .left-sidebar *,
+    .left-sidebar-container * {
+      color: #ffffff !important;
+    }
+
+    /* SVG icons in sidebar should also be white */
+    nav svg, aside svg,
+    [class*="sidebar"] svg,
+    a[href="/?feed=home"] svg,
+    a[href*="/explore"] svg {
+      fill: #ffffff !important;
+      color: #ffffff !important;
+    }
+
+    /* Ensure tab text is visible */
+    .tabmenu a, .tabmenu li a,
+    [class*="Tab"] a, [class*="tab"] a {
+      color: #e0e0e0 !important;
+    }
+
+    .tabmenu .selected a, .tabmenu li.selected a {
+      color: #fff !important;
+    }
+  `;
+
+  let redditStyleElement = null;
+
+  function injectRedditCSS() {
+    if (redditStyleElement) return;
+    if (!window.location.hostname.includes('reddit.com')) return;
+
+    redditStyleElement = document.createElement('style');
+    redditStyleElement.id = 'better-dark-mode-reddit';
+    redditStyleElement.textContent = REDDIT_CSS;
+    document.head.appendChild(redditStyleElement);
+  }
+
+  function removeRedditCSS() {
+    if (redditStyleElement) {
+      redditStyleElement.remove();
+      redditStyleElement = null;
+    }
+  }
+
   // Elements to skip (preserve original appearance)
   const SKIP_TAGS = new Set([
-    'IMG', 'VIDEO', 'IFRAME', 'CANVAS', 'PICTURE', 'SVG',
+    'VIDEO', 'IFRAME', 'CANVAS', 'PICTURE',
     'EMBED', 'OBJECT', 'SOURCE', 'TRACK'
   ]);
+
+  // Elements that might need inversion (dark logos/icons)
+  const INVERTABLE_TAGS = new Set(['IMG', 'SVG']);
 
   // Input elements that need special styling
   const INPUT_TAGS = new Set([
@@ -225,6 +430,23 @@
       return;
     }
 
+    // Handle SVG images and icons - invert dark ones
+    if (INVERTABLE_TAGS.has(element.tagName) && !siteHasDarkTheme) {
+      const src = element.src || element.getAttribute('src') || '';
+      const isSvg = src.includes('.svg') || element.tagName === 'SVG';
+      const isIcon = element.classList?.toString().toLowerCase().includes('icon') ||
+                     element.classList?.toString().toLowerCase().includes('logo') ||
+                     src.toLowerCase().includes('logo') ||
+                     src.toLowerCase().includes('icon');
+      const isSmall = element.width < 400 && element.height < 400;
+
+      // Invert SVGs and small logo/icon images
+      if (isSvg || (isIcon && isSmall)) {
+        element.style.setProperty('filter', 'invert(1) brightness(0.9)', 'important');
+      }
+      return;
+    }
+
     const computed = window.getComputedStyle(element);
     const isInput = INPUT_TAGS.has(element.tagName);
     const needsBrightText = BRIGHT_TEXT_TAGS.has(element.tagName);
@@ -240,13 +462,18 @@
       }
     }
 
-    // Handle background color
+    // Handle background color (both background-color and background shorthand)
     const bgColor = parseColor(computed.backgroundColor);
 
     if (!siteHasDarkTheme && bgColor) {
       const transformedBg = transformBackgroundColor(bgColor, isInput);
       if (transformedBg) {
         element.style.setProperty('background-color', transformedBg, 'important');
+        // Also set background shorthand to catch cases where it overrides background-color
+        const bgImage = computed.backgroundImage;
+        if (!bgImage || bgImage === 'none') {
+          element.style.setProperty('background', transformedBg, 'important');
+        }
       }
 
       if (isInput) {
@@ -262,6 +489,31 @@
     const elementHasDarkBg = hasDarkGradient || (bgColor && getBrightness(bgColor.r, bgColor.g, bgColor.b) <= BG_BRIGHTNESS_THRESHOLD);
     const onDarkBackground = siteHasDarkTheme || elementHasDarkBg;
 
+    // Check for gradient text (background-clip: text) - these need special handling
+    const bgClip = computed.webkitBackgroundClip || computed.backgroundClip;
+    const hasGradientText = bgClip === 'text' && computed.backgroundImage && computed.backgroundImage.includes('gradient');
+
+    if (hasGradientText && !siteHasDarkTheme) {
+      // Remove the gradient and use solid light text instead
+      element.style.setProperty('background-image', 'none', 'important');
+      element.style.setProperty('-webkit-background-clip', 'unset', 'important');
+      element.style.setProperty('background-clip', 'unset', 'important');
+      element.style.setProperty('-webkit-text-fill-color', '#e8e8e8', 'important');
+      element.style.setProperty('color', '#e8e8e8', 'important');
+    }
+
+    // Also check for dark gradients used as text color (without background-clip)
+    const bgImage = computed.backgroundImage;
+    if (!siteHasDarkTheme && bgImage && bgImage.includes('gradient') && isGradientDark(bgImage)) {
+      // If this element has a dark gradient and is likely text, make it visible
+      const isTextElement = ['H1','H2','H3','H4','H5','H6','P','SPAN','A','LABEL','STRONG','EM','B','I'].includes(element.tagName);
+      if (isTextElement) {
+        element.style.setProperty('background-image', 'none', 'important');
+        element.style.setProperty('-webkit-text-fill-color', '#e8e8e8', 'important');
+        element.style.setProperty('color', '#e8e8e8', 'important');
+      }
+    }
+
     const textColor = parseColor(computed.color);
     if (textColor) {
       const textBrightness = getBrightness(textColor.r, textColor.g, textColor.b);
@@ -270,17 +522,17 @@
 
       if (isColorfulText) {
         // Keep colorful text as-is
-      } else if (onDarkBackground && textBrightness < KEEP_BLACK_THRESHOLD) {
-        // Keep black text black on dark backgrounds
       } else if (!siteHasDarkTheme) {
-        if ((isInput || needsBrightText) && textBrightness < 200) {
-          element.style.setProperty('color', '#fff', 'important');
-        } else if (textBrightness >= KEEP_BLACK_THRESHOLD && textBrightness < TEXT_BRIGHTNESS_THRESHOLD) {
-          element.style.setProperty('color', '#fff', 'important');
+        // If text is dark/gray (below 180 brightness), make it light
+        // This catches gray text that would be hard to read on dark backgrounds
+        if (textBrightness < 180) {
+          element.style.setProperty('color', '#e8e8e8', 'important');
+          element.style.setProperty('-webkit-text-fill-color', '#e8e8e8', 'important');
         }
       }
     } else if ((isInput || needsBrightText) && !siteHasDarkTheme) {
       element.style.setProperty('color', '#fff', 'important');
+      element.style.setProperty('-webkit-text-fill-color', '#fff', 'important');
     }
 
     // Handle borders (only on light sites)
@@ -292,6 +544,23 @@
           const hsl = rgbToHsl(borderColor.r, borderColor.g, borderColor.b);
           const rgb = hslToRgb(hsl.h, Math.min(hsl.s * 0.3, 15), 30);
           element.style.setProperty('border-color', `rgb(${rgb.r}, ${rgb.g}, ${rgb.b})`, 'important');
+        }
+      }
+
+      // Handle individual border sides (for thread lines)
+      const borderLeftColor = parseColor(computed.borderLeftColor);
+      if (borderLeftColor) {
+        const brightness = getBrightness(borderLeftColor.r, borderLeftColor.g, borderLeftColor.b);
+        if (brightness > 150) {
+          element.style.setProperty('border-left-color', '#333', 'important');
+        }
+      }
+
+      const borderRightColor = parseColor(computed.borderRightColor);
+      if (borderRightColor) {
+        const brightness = getBrightness(borderRightColor.r, borderRightColor.g, borderRightColor.b);
+        if (brightness > 150) {
+          element.style.setProperty('border-right-color', '#333', 'important');
         }
       }
     }
@@ -342,7 +611,8 @@
         color: element.style.color,
         borderColor: element.style.borderColor,
         fill: element.style.fill,
-        stroke: element.style.stroke
+        stroke: element.style.stroke,
+        filter: element.style.filter
       });
     }
   }
@@ -356,12 +626,16 @@
       element.style.borderColor = original.borderColor;
       element.style.fill = original.fill;
       element.style.stroke = original.stroke;
+      element.style.filter = original.filter;
       originalStyles.delete(element);
     }
   }
 
   function enableDarkMode() {
     document.documentElement.classList.add('better-dark-mode-enabled');
+
+    // Inject Reddit-specific CSS
+    injectRedditCSS();
 
     siteHasDarkTheme = detectDarkTheme();
 
@@ -388,6 +662,9 @@
 
   function disableDarkMode() {
     document.documentElement.classList.remove('better-dark-mode-enabled');
+
+    // Remove Reddit-specific CSS
+    removeRedditCSS();
 
     const allElements = document.querySelectorAll('*');
     allElements.forEach(el => {
