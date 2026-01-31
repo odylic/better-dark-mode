@@ -187,6 +187,117 @@
   `;
 
   let redditStyleElement = null;
+  let globalStyleElement = null;
+
+  // Global CSS for all sites - input hover states, dropdowns, etc.
+  const GLOBAL_CSS = `
+    /* Prevent inputs from going white on hover/focus */
+    input:hover, input:focus, input:active,
+    textarea:hover, textarea:focus, textarea:active,
+    select:hover, select:focus, select:active,
+    button:hover, button:focus, button:active,
+    [type="text"]:hover, [type="text"]:focus,
+    [type="search"]:hover, [type="search"]:focus,
+    [type="email"]:hover, [type="email"]:focus,
+    [type="password"]:hover, [type="password"]:focus {
+      background-color: #2a2a2a !important;
+      background: #2a2a2a !important;
+      color: #ffffff !important;
+      border-color: #555 !important;
+    }
+
+    /* PlacesAutocomplete dropdown container and ALL children */
+    #PlacesAutocomplete__autocomplete-container,
+    #PlacesAutocomplete__autocomplete-container *,
+    [id*="PlacesAutocomplete__autocomplete"] *,
+    [id*="autocomplete-container"] *,
+    #PlacesAutocomplete__root ~ div,
+    #PlacesAutocomplete__root ~ div *,
+    [class*="PlacesAutocomplete"] div[class^="css-"],
+    [class*="autocomplete-dropdown"],
+    [class*="autocomplete-dropdown"] *,
+    [class*="autocomplete-items"],
+    [class*="autocomplete-items"] *,
+    [class*="suggestion-list"],
+    [class*="suggestion-list"] *,
+    [class*="suggestions-container"],
+    [class*="suggestions-container"] *,
+    .pac-container,
+    .pac-container *,
+    [role="listbox"]:not(select),
+    [role="listbox"]:not(select) * {
+      background-color: #1c1c1c !important;
+      background: #1c1c1c !important;
+      color: #e8e8e8 !important;
+    }
+
+    /* Hover states for dropdown items */
+    #PlacesAutocomplete__autocomplete-container > div:hover,
+    #PlacesAutocomplete__autocomplete-container > div:hover *,
+    [id*="PlacesAutocomplete__autocomplete"] > div:hover,
+    [id*="PlacesAutocomplete__autocomplete"] > div:hover * {
+      background-color: #333333 !important;
+      background: #333333 !important;
+      color: #ffffff !important;
+    }
+
+    /* Google Places Autocomplete specific */
+    .pac-container {
+      background-color: #1c1c1c !important;
+      border-color: #444 !important;
+    }
+    .pac-item,
+    .pac-item:hover,
+    .pac-item-selected {
+      background-color: #1c1c1c !important;
+      border-color: #333 !important;
+      color: #e8e8e8 !important;
+    }
+    .pac-item:hover,
+    .pac-item-selected {
+      background-color: #333333 !important;
+    }
+    .pac-item-query,
+    .pac-matched {
+      color: #ffffff !important;
+    }
+
+    /* Generic dropdown item hover - only for elements that look like options */
+    [role="option"]:hover,
+    [role="option"][aria-selected="true"] {
+      background-color: #333333 !important;
+      background: #333333 !important;
+      color: #ffffff !important;
+    }
+
+    /* Autocomplete/autofill background fix */
+    input:-webkit-autofill,
+    input:-webkit-autofill:hover,
+    input:-webkit-autofill:focus,
+    textarea:-webkit-autofill,
+    textarea:-webkit-autofill:hover,
+    textarea:-webkit-autofill:focus {
+      -webkit-box-shadow: 0 0 0 1000px #1c1c1c inset !important;
+      -webkit-text-fill-color: #ffffff !important;
+      background-color: #1c1c1c !important;
+    }
+  `;
+
+  function injectGlobalCSS() {
+    if (globalStyleElement) return;
+
+    globalStyleElement = document.createElement('style');
+    globalStyleElement.id = 'better-dark-mode-global';
+    globalStyleElement.textContent = GLOBAL_CSS;
+    document.head.appendChild(globalStyleElement);
+  }
+
+  function removeGlobalCSS() {
+    if (globalStyleElement) {
+      globalStyleElement.remove();
+      globalStyleElement = null;
+    }
+  }
 
   function injectRedditCSS() {
     if (redditStyleElement) return;
@@ -634,6 +745,9 @@
   function enableDarkMode() {
     document.documentElement.classList.add('better-dark-mode-enabled');
 
+    // Inject global CSS (input hover states, etc.)
+    injectGlobalCSS();
+
     // Inject Reddit-specific CSS
     injectRedditCSS();
 
@@ -663,7 +777,8 @@
   function disableDarkMode() {
     document.documentElement.classList.remove('better-dark-mode-enabled');
 
-    // Remove Reddit-specific CSS
+    // Remove injected CSS
+    removeGlobalCSS();
     removeRedditCSS();
 
     const allElements = document.querySelectorAll('*');
